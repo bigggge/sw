@@ -1,0 +1,19 @@
+{
+  "name": "sw",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon server.js"
+  },
+  "author": "bigggge",
+  "license": "MIT",
+  "dependencies": {
+    "koa": "^2.5.0",
+    "koa-logger": "^3.2.0",
+    "koa-mount": "^3.0.0",
+    "koa-router": "^7.4.0",
+    "koa-static": "^4.0.2",
+    "nodemon": "^1.17.3"
+  }
+}
