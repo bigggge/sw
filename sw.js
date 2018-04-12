@@ -69,14 +69,13 @@ this.addEventListener('fetch', function (event) {
 });
 
 this.addEventListener('push', function (event) {
-  var title = 'Yay a message.';
-  var body = 'We have received a push message.';
+  console.log(event);
+  var title = '博客更新啦';
+  var body = '点开看看吧';
   var icon = '/images/icon-192x192.png';
   var tag = 'simple-push-demo-notification-tag';
   var data = {
-    doge: {
-      wow: 'such amaze notification data'
-    }
+    url: location.origin
   };
   event.waitUntil(
     this.registration.showNotification(title, {
@@ -87,3 +86,15 @@ this.addEventListener('push', function (event) {
     })
   );
 });
+
+this.addEventListener('notificationclick', function (event) {
+  console.log('[Service Worker] Notification click Received.');
+
+  let notification = event.notification;
+  console.log(notification.data);
+  notification.close();
+  event.waitUntil(
+    clients.openWindow(notification.data.url)
+  );
+});
+

@@ -7,7 +7,8 @@
 
 let swRegistration = null;
 let isSubscribed = false;
-const applicationServerPublicKey = 'BMUa61NxQjbEn0sO_3NTJmRaKOngcPAZBTDtMy8d7IeOXVCbIQ5zDBsVXeFHCY3-KK64r1nXdPQTdnWQkuMY0KI';
+const applicationServerPublicKey
+  = 'BFsGZkBK4GQu5-ebV6YoUGGVeBwpSLDLTu5IDY2At5K56tDmWC_l5xWNHXiG8zVyYqwUa4s_lmEdEXgisKLCQk0';
 
 // 判断 Service Worker 是否可用
 if ('serviceWorker' in navigator && 'PushManager' in window) {
@@ -16,7 +17,7 @@ if ('serviceWorker' in navigator && 'PushManager' in window) {
     navigator.serviceWorker.register('./sw.js', {scope: '/'})
       .then(function (registration) {
         swRegistration = registration;
-        initializeUI();
+        initialize();
         if (registration.installing) {
           console.log('Service worker installing');
         } else if (registration.waiting) {
@@ -32,7 +33,8 @@ if ('serviceWorker' in navigator && 'PushManager' in window) {
   });
 }
 
-function initializeUI () {
+function initialize () {
+  subscribeUser();
   // Set the initial subscription value
   swRegistration.pushManager.getSubscription()
     .then(function (subscription) {
@@ -46,7 +48,7 @@ function initializeUI () {
 
     });
 
-  subscribeUser();
+  // unsubscribeUser();
 }
 
 function subscribeUser () {
@@ -66,26 +68,41 @@ function subscribeUser () {
     })
     .catch(function (err) {
       console.log('Failed to subscribe the user: ', err);
+      unsubscribeUser()
+      // updateBtn();
+    });
+}
+
+function unsubscribeUser () {
+  swRegistration.pushManager.getSubscription()
+    .then(function (subscription) {
+      if (subscription) {
+        return subscription.unsubscribe();
+      }
+    })
+    .catch(function (error) {
+      console.log('Error unsubscribing', error);
+    })
+    .then(function () {
+      updateSubscriptionOnServer(null);
+
+      console.log('User is unsubscribed.');
+      isSubscribed = false;
+
       // updateBtn();
     });
 }
 
 function updateSubscriptionOnServer (subscription) {
-  // TODO: Send subscription to application server
 
   const subscriptionJson = document.querySelector('.js-subscription-json');
-  const subscriptionDetails =
-    document.querySelector('.js-subscription-details');
 
   if (subscription) {
     subscriptionJson.textContent = JSON.stringify(subscription);
-    subscriptionDetails.classList.remove('is-invisible');
-  } else {
-    subscriptionDetails.classList.add('is-invisible');
   }
 }
 
-function urlB64ToUint8Array(base64String) {
+function urlB64ToUint8Array (base64String) {
   const padding = '='.repeat((4 - base64String.length % 4) % 4);
   const base64 = (base64String + padding)
     .replace(/\-/g, '+')

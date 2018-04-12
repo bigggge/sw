@@ -113,3 +113,41 @@ Service Worker 只是一个常驻在浏览器中的 JS 线程，它本身做不�
 - 跟 Push 和 Notification 搭配，可以做像 Native APP 那样的消息推送
 
 假如把这些技术融合在一起，再加上 Manifest 等，就差不多成了 PWA 了。
+
+
+### 接收推送消息
+
+https://fed.renren.com/2017/10/08/service-worker-notification/
+
+```javascript
+this.addEventListener('push', function (event) {
+  console.log(event);
+  var title = '博客更新啦';
+  var body = '点开看看吧';
+  var icon = '/images/icon-192x192.png';
+  var tag = 'simple-push-demo-notification-tag';
+  var data = {
+    url: location.origin
+  };
+  event.waitUntil(
+    this.registration.showNotification(title, {
+      body: body,
+      icon: icon,
+      tag: tag,
+      data: data
+    })
+  );
+});
+
+this.addEventListener('notificationclick', function (event) {
+  console.log('[Service Worker] Notification click Received.');
+
+  let notification = event.notification;
+  console.log(notification.data);
+  notification.close();
+  event.waitUntil(
+    clients.openWindow(notification.data.url)
+  );
+});
+```
+
