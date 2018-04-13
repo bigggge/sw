@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8"/>
+    <title>Test threads fibonacci</title>
+  </head>
+  <body>
+
+    <div style='width:100px;height:100px;background-color:red'></div>
+
+    <script>
+      document.querySelector('div').onclick = function () {
+        console.log('hello world');
+      };
+
+      function fibonacci (n) {
+        return n < 2 ? n : fibonacci(n - 1) + fibonacci(n - 2);
+      }
+
+      //      function fibonacci (n , a = 0 , b = 1) {
+      //        if( n === 0 ) {return a};
+      //
+      //        return fibonacci (n - 1, b, a + b);
+      //      }
+
+      console.log(fibonacci(40));
+    </script>
+  </body>
+</html>

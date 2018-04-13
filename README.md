@@ -1,3 +1,71 @@
+## 先导技术
+
+### 浏览器缓存
+
+#### 强缓存
+
+强缓存是利用Expires或者Cache-Control这两个http response header实现的，它们都用来表示资源在客户端缓存的有效期。
+
+
+- 配置超长时间的本地缓存，节省带宽，提高性能
+- 采用内容摘要作为缓存更新依据，精确的缓存控制
+- 静态资源CDN部署，优化网络请求                        
+- 非覆盖式发布  —— 平滑升级
+
+#### 协商缓存
+
+协商缓存是利用的是【Last-Modified，If-Modified-Since】和【ETag、If-None-Match】这两对Header来管理的。
+
+### 应用缓存
+
+为了在无网络下也能访问应用，HTML5 规范中设计了应用缓存（Application Cache）这么一个新的概念。通过它，我们可以做离线应用。然而，由于这个 API 的设计有太多的缺陷，被很多人吐槽，最终被废弃。
+
+https://developer.mozilla.org/zh-CN/docs/Web/HTML/Using_the_application_cache
+
+### CacheStorage 
+
+用 JS 对缓存进行增删改查
+
+### Web Workers
+
+为了在进行高耗时 JS 运算时，UI 页面仍可用，那么就得另外开辟一个独立的 JS 线程来运行这些高耗时的 JS 代码，这就是 Web Workers。
+
+Web Workers 采用的**消息传递模型**是一个很好的多线程编程模型，不仅简单易懂，同样也可以达到很高的性能。erlang/go 等也都是用类似的方式。
+
+index.html
+
+```html
+<div style='width:100px;height:100px;background-color:red'></div>
+<script>
+  document.querySelector('div').onclick = function () {
+    console.log('hello world');
+  };
+
+  var worker = new Worker('worker.js');
+  worker.postMessage(40);
+  worker.onmessage = function (event) {
+    var data = event.data;
+    console.log(data);
+  };
+
+  worker.onerror = function (event) {
+    console.log(event.filename, event.lineno, event.message);
+  };
+</script>
+```
+worker.js
+
+```javascript
+self.onmessage = function (event) {
+  var data = event.data;
+  var ans = fibonacci(data);
+  this.postMessage(ans);
+};
+
+function fibonacci (n) {
+  return n < 2 ? n : fibonacci(n - 1) + fibonacci(n - 2);
+}
+```
 ## 注册 Service Worker
 
 ```javascript

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Web workers</title>
+  </head>
+  <body>
+    <div style='width:100px;height:100px;background-color:red'></div>
+    <script>
+      document.querySelector('div').onclick = function () {
+        console.log('hello world');
+      };
+
+      var worker = new Worker('worker.js');
+      worker.postMessage(40);
+      worker.onmessage = function (event) {
+        var data = event.data;
+        console.log(data);
+      };
+
+      worker.onerror = function (event) {
+        console.log(event.filename, event.lineno, event.message);
+      };
+    </script>
+
+  </body>
+</html>
